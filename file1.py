@@ -205,7 +205,7 @@ while True:
 
             if 1 <= numhabit <= len(calendar[daywuk]):
                 habit_to_mark = calendar[daywuk][numhabit - 1]
-                calendar[daywuk][numhabit - 1] = f"[+]{habit_to_mark}"
+                calendar[daywuk][numhabit - 1] = f"{habit_to_mark}  [+]"
                 print(f"Завдання '{habit_to_mark}' позначено як виконане.")
 
         case 8:
@@ -231,7 +231,7 @@ while True:
 
             if 1 <= numhabit <= len(calendar[daywuk]):
                 habit_to_mark = calendar[daywuk][numhabit - 1]
-                calendar[daywuk][numhabit - 1] = f"[-]{habit_to_mark}"
+                calendar[daywuk][numhabit - 1] = f"{habit_to_mark}  [-]"
                 print(f"Завдання '{habit_to_mark}' позначено як не виконане.")
             
             
