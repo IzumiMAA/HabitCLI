@@ -2,6 +2,11 @@ import json
 import sys
 sys.stdout.reconfigure(encoding="utf-8")
 
+from datetime import date
+
+days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
+today = days[date.today().weekday()]
+
 try:
     with open("database.json", "r", encoding="utf-8") as f:
         data = json.load(f)
@@ -32,6 +37,10 @@ except (FileNotFoundError, json.JSONDecodeError):
 def listC():
     for day, tasks in calendar.items():
         tasks_str = ", ".join(tasks) if tasks else " "
+        if day != today:
+            day = day
+        else: 
+            day = f"-> {day}"
         print(f"{day:<4} - {tasks_str}")
 
 
@@ -76,11 +85,15 @@ while True:
                 masuvzwk.pop()
                 continue
 
-            nd = int(input("Оберіть кількість днів на тиждень для виконання: "))
-            
-            # перевірка на тип та занчення змінної
-            if not isinstance(nd, int) or nd <= 0:
-                print("Помилка: кількість днів повинна бути цілим числом.")
+            # перевірка введення кількості днів
+            try:
+               nd = int(input("Оберіть кількість днів на тиждень для виконання: "))
+            except ValueError:
+                print("Помилка: введіть ціле число.")
+                masuvzwk.pop()
+                continue
+            if nd <= 0:
+                print("Помилка: кількість днів повинна бути більшою за 0.")
                 masuvzwk.pop()
                 continue
 
