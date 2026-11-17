@@ -44,6 +44,9 @@ def listC():
         print(f"{day:<4} - {tasks_str}")
 
 
+taskNo = 0
+taskwuk = 0
+
 while True:
 
     print("=" * 36)
@@ -63,7 +66,11 @@ while True:
 
     print("="*36)
     print(" "*4,"7. Позначити завдання виконаним [+]")
-    print(" "*4,"8. Позначити завдання НЕ виконаним [-]")    
+    print(" "*4,"8. Позначити завдання НЕ виконаним [-]") 
+
+    print("="*36)
+    print(" "*4,"9. Статистика всіх іиконаних завдань") 
+    print(" "*4,"10. Статистика одного завдання")  
 
     print(" " * 4, "0. Вийти")
 
@@ -188,6 +195,8 @@ while True:
 
             daywuk = input("Оберіть день для позначення виконаного завдання: ")
 
+            
+
             # перевірка на правильність введення дня тижня
             if daywuk not in calendar:
                 print("Помилка: введено неправильний день тижня.")
@@ -197,6 +206,10 @@ while True:
                 print(f"{number}. {habit}")
 
             numhabit = int(input("Оберіть номер завдання для позначення виконаним: "))
+
+            
+            taskwuk = taskwuk + 1
+
             
             # перевірка значення номера завдання
             if numhabit < 0 or numhabit > len(calendar[daywuk]):
@@ -224,6 +237,9 @@ while True:
 
             numhabit = int(input("Оберіть номер завдання для позначення не виконаним: "))
 
+            
+            taskNo = taskNo + 1
+
             # перевірка значення номера завдання
             if numhabit < 0 or numhabit > len(calendar[daywuk]):
                 print ("Введенно некоректне значення")
@@ -234,5 +250,16 @@ while True:
                 calendar[daywuk][numhabit - 1] = f"{habit_to_mark}  [-]"
                 print(f"Завдання '{habit_to_mark}' позначено як не виконане.")
             
-            
+        case 9:
+            print() 
+            print("="*12,"СОРТУВАННЯ","="*12)
 
+            total_tasks = sum(len(tasks) for tasks in calendar.values())
+
+            print("Кількість завдань: ", total_tasks)
+            print("Кількість виконаних завдань: ", taskwuk)           
+            print("Не виконані завдання: ", taskNo)
+
+            prog = (taskwuk*100) / total_tasks
+
+            print("Прогрес: ", prog)
