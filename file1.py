@@ -4,6 +4,9 @@ sys.stdout.reconfigure(encoding="utf-8")
 
 from datetime import date
 
+masuvzwkvuk = []
+masuvzwkno = []
+
 days = ["Пн", "Вт", "Ср", "Чт", "Пт", "Сб", "Нд"]
 today = days[date.today().weekday()]
 
@@ -40,7 +43,7 @@ def listC():
         if day != today:
             day = day
         else: 
-            day = f"-> {day}"
+            day = "\033[92m" + day + "\033[0m"
         print(f"{day:<4} - {tasks_str}")
 
 
@@ -69,7 +72,7 @@ while True:
     print(" "*4,"8. Позначити завдання НЕ виконаним [-]") 
 
     print("="*36)
-    print(" "*4,"9. Статистика всіх іиконаних завдань") 
+    print(" "*4,"9. Статистика всіх виконаних завдань") 
     print(" "*4,"10. Статистика одного завдання")  
 
     print(" " * 4, "0. Вийти")
@@ -122,7 +125,8 @@ while True:
                 calendar[day].append(zwuchka)
 
         case 2:
-            print(masuvzwk)
+            for index, item in enumerate(masuvzwk, start=1):
+                print(f"{index}. {item}")
         case 3:
             print("=" * 42)
             print("=" * 17, "КАЛЕНДАР", "=" * 17)
@@ -206,20 +210,20 @@ while True:
                 print(f"{number}. {habit}")
 
             numhabit = int(input("Оберіть номер завдання для позначення виконаним: "))
-
-            
-            taskwuk = taskwuk + 1
-
             
             # перевірка значення номера завдання
             if numhabit < 0 or numhabit > len(calendar[daywuk]):
                 print ("Введенно некоректне значення")
                 continue
 
+            taskwuk = taskwuk + 1
+
             if 1 <= numhabit <= len(calendar[daywuk]):
                 habit_to_mark = calendar[daywuk][numhabit - 1]
                 calendar[daywuk][numhabit - 1] = f"{habit_to_mark}  [+]"
                 print(f"Завдання '{habit_to_mark}' позначено як виконане.")
+
+            masuvzwkvuk.append(habit_to_mark)
 
         case 8:
             print()
@@ -235,31 +239,89 @@ while True:
             for number, habit in enumerate(calendar[daywuk], start=1):
                 print(f"{number}. {habit}")
 
+            
+
             numhabit = int(input("Оберіть номер завдання для позначення не виконаним: "))
 
-            
-            taskNo = taskNo + 1
 
             # перевірка значення номера завдання
             if numhabit < 0 or numhabit > len(calendar[daywuk]):
                 print ("Введенно некоректне значення")
                 continue
 
-            if 1 <= numhabit <= len(calendar[daywuk]):
+            taskNo = taskNo + 1
+
+            if numhabit < 1 or numhabit > len(calendar[daywuk]):
                 habit_to_mark = calendar[daywuk][numhabit - 1]
                 calendar[daywuk][numhabit - 1] = f"{habit_to_mark}  [-]"
                 print(f"Завдання '{habit_to_mark}' позначено як не виконане.")
+
+            masuvzwkno.append(habit_to_mark)
             
         case 9:
             print() 
-            print("="*12,"СОРТУВАННЯ","="*12)
+            print("="*12,"СТАТИСТИКА","="*12)
 
             total_tasks = sum(len(tasks) for tasks in calendar.values())
 
             print("Кількість завдань: ", total_tasks)
             print("Кількість виконаних завдань: ", taskwuk)           
-            print("Не виконані завдання: ", taskNo)
+            print("Не виконані завдання: ",taskNo)
 
-            prog = (taskwuk*100) / total_tasks
+            if total_tasks > 0:
+                prog = (taskwuk * 100) / total_tasks
+            else:
+                prog = 0
 
-            print("Прогрес: ", prog)
+            print(f"Прогрес: {prog:.1f}%")
+
+        case 10:
+            print()
+            print("Список існуючих звичок: ")
+
+            for index, item in enumerate(masuvzwk, start=1):
+                print(f"{index}. {item}")
+
+            numstatzwk = int(input("Введіть номер бажаної звички зі списку: "))
+
+            if numstatzwk < 1 or numstatzwk > len(masuvzwk):
+                print("Введено некоректний номер.")
+                continue
+            
+            zwkstat = masuvzwk[numstatzwk - 1]
+
+            # Функція для видалення позначок [+] та [-]
+            def clean_habit(habit):
+                return habit.replace("  [+]", "").replace("  [-]", "")
+
+            # Загальна кількість запланованих завдань
+            sumzwk = sum(
+                clean_habit(task) == zwkstat
+                for tasks in calendar.values()
+                for task in tasks
+            )
+
+            # Кількість виконаних
+            sumzwkvuk = 0
+            for habit in masuvzwkvuk:
+                if clean_habit(habit) == zwkstat:
+                    sumzwkvuk += 1
+
+            # Кількість невиконаних
+            sumzwkno = 0
+            for habit in masuvzwkno:
+                if clean_habit(habit) == zwkstat:
+                    sumzwkno += 1
+
+            # Прогрес
+            if sumzwk > 0:
+                prog1 = (sumzwkvuk * 100) / sumzwk
+            else:
+                prog1 = 0
+
+            print("Загальна кількість запланувань звички:", sumzwk)
+            print("Загальна кількість виконань звички:", sumzwkvuk)
+            print("Загальна кількість невиконань звички:", sumzwkno)
+            print()
+            print(f"Прогрес: {prog1:.1f}%")
+        
